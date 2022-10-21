@@ -36,6 +36,7 @@ public class EduTeacherController {
     @ApiOperation("查询所有教师")
     @GetMapping("/findAll")
     public R list(){
+//        int i=1/0;
         List<EduTeacher> list = eduTeacherService.list(null);
         return R.ok().data("teacherlist",list);
     }
@@ -125,6 +126,7 @@ public class EduTeacherController {
     @ApiOperation("修改讲师")
     @PostMapping("/updateById")
     public R updateById(EduTeacher teacher){
+
         boolean flag = eduTeacherService.updateById(teacher);
         if (flag){
             return R.ok();
