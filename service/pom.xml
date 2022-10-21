@@ -11,8 +11,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>service_edu</module>
-        <module>service_edu</module>
-        <module>service_edu</module>
     </modules>
     <artifactId>service</artifactId>
 
@@ -101,6 +99,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+        </dependency>
+<!--        引入service_base模块-->
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>service_base</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <properties>

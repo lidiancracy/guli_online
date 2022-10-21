@@ -2,6 +2,7 @@ package com.atguigu.eduservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @ClassName springapp
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 
 @SpringBootApplication
+@ComponentScan(basePackages={"com.atguigu"})
 public class springapp {
     public static void main(String[] args) {
         SpringApplication.run(springapp.class,args);
