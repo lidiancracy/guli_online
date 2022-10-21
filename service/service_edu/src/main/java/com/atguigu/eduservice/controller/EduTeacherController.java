@@ -1,6 +1,7 @@
 package com.atguigu.eduservice.controller;
 
 
+import com.atguigu.Exception.lidianException;
 import com.atguigu.R.R;
 import com.atguigu.eduservice.entity.EduTeacher;
 import com.atguigu.eduservice.service.EduTeacherService;
@@ -36,7 +37,11 @@ public class EduTeacherController {
     @ApiOperation("查询所有教师")
     @GetMapping("/findAll")
     public R list(){
-//        int i=1/0;
+//        try {
+//            int i=10/0;
+//        }catch (Exception e){
+//            throw  new lidianException(501,"违规输入");
+//        }
         List<EduTeacher> list = eduTeacherService.list(null);
         return R.ok().data("teacherlist",list);
     }
