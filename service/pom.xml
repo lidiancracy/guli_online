@@ -106,6 +106,12 @@
             <artifactId>service_base</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+<!--        引入commonutils依赖-->
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>commonutils</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
