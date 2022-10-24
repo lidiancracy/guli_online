@@ -1,17 +1,22 @@
 package com.atguigu.eduservice.controller;
 
 
+
 import com.atguigu.Exception.lidianException;
 import com.atguigu.R.R;
 import com.atguigu.eduservice.entity.EduTeacher;
 import com.atguigu.eduservice.service.EduTeacherService;
 import com.atguigu.eduservice.vo.teacherQuery;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -26,119 +31,129 @@ import java.util.List;
  * @author ld
  * @since 2022-10-21
  */
-@Api(description = "讲师管理")
+@Api(description="讲师管理")
 @RestController
 @RequestMapping("/eduservice/teacher")
+@CrossOrigin
 public class EduTeacherController {
+
+    //访问地址： http://localhost:8001/eduservice/teacher/findAll
+    //把service注入
     @Autowired
-    private EduTeacherService eduTeacherService;
+    private EduTeacherService teacherService;
 
-    //查询讲师表所有数据
-    @ApiOperation("查询所有教师")
-    @GetMapping("/findAll")
-    public R list(){
-//        try {
-//            int i=10/0;
-//        }catch (Exception e){
-//            throw  new lidianException(501,"违规输入");
-//        }
-        List<EduTeacher> list = eduTeacherService.list(null);
-        return R.ok().data("teacherlist",list);
+    //1 查询讲师表所有数据
+    //rest风格
+    @ApiOperation(value = "所有讲师列表")
+    @GetMapping("findAll")
+    public R findAllTeacher() {
+        //调用service的方法实现查询所有的操作
+        List<EduTeacher> list = teacherService.list(null);
+        return R.ok().data("items",list);
     }
 
-    /**
-     * 删除某老师
-     * @param id
-     * @return
-     */
+    //2 逻辑删除讲师的方法
     @ApiOperation(value = "逻辑删除讲师")
-    @DeleteMapping("{id}")
-    public R deleteTeacher(@ApiParam(name = "id", value = "讲师id", required = true) @PathVariable String id) {
-        boolean removeById = eduTeacherService.removeById(id);
-        return R.ok().data("delete",removeById);
-    }
-    /**
-     * 分页查询老师数据
-     */
-    @ApiOperation(value = "分页查询讲师")
-    @GetMapping("pageselect/{current}/{limit}")
-    public R pageselectTeacher(@ApiParam(value = "当前页") @PathVariable Long current,
-                               @ApiParam(value = "每页条数") @PathVariable Long limit) {
-        Page<EduTeacher> eduTeacherPage = new Page<EduTeacher>(current, limit);
-        eduTeacherService.page(eduTeacherPage,null);
-        // 获取当页记录
-        List<EduTeacher> records = eduTeacherPage.getRecords();
-        //获取总条数
-        return R.ok().data("total",eduTeacherPage.getTotal()).data("data",records);
-    }
-    /**
-     * 分页查询老师数据带条件
-     */
-    @ApiOperation(value = "条件分页查询讲师")
-    @GetMapping("pagecondition/{current}/{limit}")
-    public R pageselectTeachercd(@ApiParam(value = "当前页") @PathVariable Long current,
-                                 @ApiParam(value = "每页条数") @PathVariable Long limit, teacherQuery teacherQuery) {
-        Page<EduTeacher> eduTeacherPage = new Page<EduTeacher>(current, limit);
-
-        LambdaQueryWrapper<EduTeacher> qw = new LambdaQueryWrapper<>();
-        String name = teacherQuery.getName();
-        Integer level = teacherQuery.getLevel();
-        String begin = teacherQuery.getBegin();
-        String end = teacherQuery.getEnd();
-        if(StringUtils.hasLength(name)){
-            qw.like(EduTeacher::getName,name);
-        }
-        if(level!=null){
-            qw.eq(EduTeacher::getLevel,level);
-        }
-        if(StringUtils.hasText(begin)){
-            qw.ge(EduTeacher::getGmtCreate,begin);
-        }
-        if(StringUtils.hasText(end)){
-            qw.le(EduTeacher::getGmtCreate,end);
-        }
-        eduTeacherService.page(eduTeacherPage,qw);
-        // 获取当页记录
-        List<EduTeacher> records = eduTeacherPage.getRecords();
-        //获取总条数
-        return R.ok().data("total",eduTeacherPage.getTotal()).data("data",records);
-    }
-    /**
-     * 添加讲师
-     */
-    @ApiOperation(value = "添加讲师")
-    @PostMapping("addteacher")
-    public R pageselectTeacher(EduTeacher eduTeacher) {
-        eduTeacherService.save(eduTeacher);
-        return R.ok();
-    }
-    /**
-     * 根据id查询
-     */
-    //根据id查询,用于信息回显
-    @ApiOperation("根据id查询")
-    @GetMapping("/getById/{id}")
-    public R getById(@ApiParam("用户id") @PathVariable String id){
-        EduTeacher teacher = eduTeacherService.getById(id);
-        return R.ok().data("item",teacher);
-    }
-
-    /**
-     * 修改讲师
-     * @param teacher
-     * @return
-     */
-    @ApiOperation("修改讲师")
-    @PostMapping("/updateById")
-    public R updateById(EduTeacher teacher){
-
-        boolean flag = eduTeacherService.updateById(teacher);
-        if (flag){
+    @DeleteMapping("/{id}")
+    public R removeTeacher(@ApiParam(name = "id", value = "讲师ID", required = true)
+                           @PathVariable String id) {
+        // mybatis plus 提供的逻辑删除
+        boolean flag = teacherService.removeById(id);
+        if(flag) {
             return R.ok();
-        }else {
+        } else {
             return R.error();
         }
     }
 
+    //3 分页查询讲师的方法
+    //current 当前页
+    //limit 每页记录数
+    @GetMapping("pageTeacher/{current}/{limit}")
+    public R pageListTeacher(@ApiParam("当前页") @PathVariable long current,
+                             @ApiParam("每页大小") @PathVariable long limit) {
+        //创建page对象
+        Page<EduTeacher> pageTeacher = new Page<>(current,limit);
+
+        //调用方法实现分页
+        //调用方法时候，底层封装，把分页所有数据封装到pageTeacher对象里面
+        teacherService.page(pageTeacher,null);
+
+        long total = pageTeacher.getTotal();//总记录数
+        List<EduTeacher> records = pageTeacher.getRecords(); //数据list集合
+
+
+        return R.ok().data("total",total).data("rows",records);
+    }
+
+    //4 条件查询带分页的方法
+    @PostMapping("pageTeacherCondition/{current}/{limit}")
+    public R pageTeacherCondition(@ApiParam("当前页") @PathVariable long current, @ApiParam("每页大小") @PathVariable long limit,
+                                 @RequestBody teacherQuery teacherQuery) {
+        //创建page对象
+        Page<EduTeacher> pageTeacher = new Page<>(current,limit);
+
+        //构建条件
+        LambdaQueryWrapper<EduTeacher> wrapper = new LambdaQueryWrapper<>();
+        // 多条件组合查询
+        // mybatis学过 动态sql
+        String name = teacherQuery.getName();
+        Integer level = teacherQuery.getLevel();
+        String begin = teacherQuery.getBegin();
+        String end = teacherQuery.getEnd();
+        //判断条件值是否为空，如果不为空拼接条件
+        if(!StringUtils.isEmpty(name)) {
+            //构建条件
+            wrapper.like(EduTeacher::getName,name);
+        }
+        if(!StringUtils.isEmpty(level)) {
+            wrapper.eq(EduTeacher::getLevel,level);
+        }
+        if(!StringUtils.isEmpty(begin)) {
+            wrapper.ge(EduTeacher::getGmtCreate,begin);
+        }
+        if(!StringUtils.isEmpty(end)) {
+            wrapper.le(EduTeacher::getGmtCreate,end);
+        }
+
+        //排序
+        wrapper.orderByDesc(EduTeacher::getGmtCreate);
+
+        //调用方法实现条件查询分页
+        teacherService.page(pageTeacher,wrapper);
+
+        long total = pageTeacher.getTotal();//总记录数
+        List<EduTeacher> records = pageTeacher.getRecords(); //数据list集合
+        return R.ok().data("total",total).data("rows",records);
+    }
+
+    //添加讲师接口的方法
+    @PostMapping("addTeacher")
+    public R addTeacher( @RequestBody EduTeacher eduTeacher) {
+        boolean save = teacherService.save(eduTeacher);
+        if(save) {
+            return R.ok();
+        } else {
+            return R.error();
+        }
+    }
+
+    //根据讲师id进行查询
+    @GetMapping("getTeacher/{id}")
+    public R getTeacher(@PathVariable String id) {
+        EduTeacher eduTeacher = teacherService.getById(id);
+        return R.ok().data("teacher",eduTeacher);
+    }
+
+    //讲师修改功能
+    @PostMapping("updateTeacher")
+    public R updateTeacher(@RequestBody EduTeacher eduTeacher) {
+        boolean flag = teacherService.updateById(eduTeacher);
+        if(flag) {
+            return R.ok();
+        } else {
+            return R.error();
+        }
+    }
 }
 
