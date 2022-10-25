@@ -14,4 +14,6 @@ public interface EduSubjectService extends IService<EduSubject> {
 
     void excel2database(MultipartFile file);
 
+    void selectall();
+
 }

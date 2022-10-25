@@ -35,6 +35,18 @@ public class EduSubjectServiceImpl extends ServiceImpl<EduSubjectMapper, EduSubj
             e.printStackTrace();
         }
     }
+
+    /**
+     * 查询所有分类 返回形式
+     * {
+     *
+     *
+     * }
+     */
+    @Override
+    public void selectall() {
+
+    }
 }
 
 
