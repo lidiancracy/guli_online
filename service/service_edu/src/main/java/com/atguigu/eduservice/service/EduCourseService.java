@@ -1,6 +1,7 @@
 package com.atguigu.eduservice.service;
 
 import com.atguigu.eduservice.entity.EduCourse;
+import com.atguigu.eduservice.vo.CoursePublishVo;
 import com.atguigu.eduservice.vo.courseVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -12,4 +13,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface EduCourseService extends IService<EduCourse> {
 
     String addcourse(courseVo courseVo);
+
+    void updateCourseInfo(courseVo courseInfoForm);
+
+    CoursePublishVo publishCourseInfo(String id);
+
+    void removeCourse(String courseId);
 }
