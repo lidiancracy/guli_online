@@ -3,17 +3,16 @@ package com.atguigu.videoservice;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
 
-/**
- * @ClassName videoservice
- * @Description TODO
- * @Date 2022/10/27 18:24
- */
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
-@ComponentScan(basePackages={"com.atguigu"})
-public class videoservice {
+@ComponentScan(basePackages = {"com.atguigu"})
+@EnableDiscoveryClient
+public class VodApplication {
+
     public static void main(String[] args) {
-        SpringApplication.run(videoservice.class,args);
+        SpringApplication.run(VodApplication.class, args);
     }
 }

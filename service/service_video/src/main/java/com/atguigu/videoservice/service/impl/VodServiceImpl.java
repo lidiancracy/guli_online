@@ -1,31 +1,25 @@
 package com.atguigu.videoservice.service.impl;
 
-
-
 import com.aliyun.vod.upload.impl.UploadVideoImpl;
 import com.aliyun.vod.upload.req.UploadStreamRequest;
 import com.aliyun.vod.upload.resp.UploadStreamResponse;
 import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.vod.model.v20170321.DeleteVideoRequest;
+
 import com.atguigu.Exception.lidianException;
+import com.atguigu.videoservice.Utils.ConstantVodUtils;
+import com.atguigu.videoservice.Utils.InitVodCilent;
 import com.atguigu.videoservice.service.VodService;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class VodServiceImpl implements VodService {
-    @Value("${vod.configs.accessKeyId}")
-    String ACCESS_KEY_ID;
-    @Value("${vod.configs.accessKeySecret}")
-    String ACCESS_KEY_SECRET;
-    @Value("${vod.configs.regionId}")
-    String rg;
 
     @Override
     public String uploadVideoAly(MultipartFile file) {
@@ -39,8 +33,7 @@ public class VodServiceImpl implements VodService {
             String title = fileName.substring(0, fileName.lastIndexOf("."));
             //inputStream：上传文件输入流
             InputStream inputStream = file.getInputStream();
-
-            UploadStreamRequest request = new UploadStreamRequest(ACCESS_KEY_ID,ACCESS_KEY_SECRET, title, fileName, inputStream);
+            UploadStreamRequest request = new UploadStreamRequest(ConstantVodUtils.ACCESS_KEY_ID,ConstantVodUtils.ACCESS_KEY_SECRET, title, fileName, inputStream);
 
             UploadVideoImpl uploader = new UploadVideoImpl();
             UploadStreamResponse response = uploader.uploadStream(request);
@@ -60,12 +53,10 @@ public class VodServiceImpl implements VodService {
     }
 
     @Override
-    public void removeMoreAlyVideo(List<String> videoIdList) {
+    public void removeMoreAlyVideo(List videoIdList) {
         try {
             //初始化对象
-            String regionId = rg;  // 点播服务接入区域
-            DefaultProfile profile = DefaultProfile.getProfile(regionId, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
-            DefaultAcsClient client = new DefaultAcsClient(profile);
+            DefaultAcsClient client = InitVodCilent.initVodClient(ConstantVodUtils.ACCESS_KEY_ID, ConstantVodUtils.ACCESS_KEY_SECRET);
             //创建删除视频request对象
             DeleteVideoRequest request = new DeleteVideoRequest();
 
@@ -81,4 +72,6 @@ public class VodServiceImpl implements VodService {
             throw new lidianException(20001,"删除视频失败");
         }
     }
+
+
 }

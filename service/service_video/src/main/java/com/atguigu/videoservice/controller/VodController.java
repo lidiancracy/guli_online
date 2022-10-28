@@ -1,31 +1,31 @@
 package com.atguigu.videoservice.controller;
 
+import com.aliyun.oss.ClientException;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.vod.model.v20170321.DeleteVideoRequest;
+import com.aliyuncs.vod.model.v20170321.DeleteVideoResponse;
+
 import com.atguigu.Exception.lidianException;
 import com.atguigu.R.R;
+import com.atguigu.videoservice.Utils.ConstantVodUtils;
+import com.atguigu.videoservice.Utils.InitVodCilent;
 import com.atguigu.videoservice.service.VodService;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-/**
- * @ClassName osscontroller
- * @Description 上传文件
- * @Date 2022/10/24 17:47
- */
-@Api(description = "上传视频管理")
 @RestController
 @RequestMapping("/eduvod/video")
 @CrossOrigin
 public class VodController {
+
     @Autowired
-    VodService vodService;
+    private VodService vodService;
+
     //上传视频到阿里云
     @PostMapping("uploadAlyiVideo")
     public R uploadAlyiVideo(MultipartFile file) {
@@ -33,20 +33,18 @@ public class VodController {
         String videoId = vodService.uploadVideoAly(file);
         return R.ok().data("videoId",videoId);
     }
-    //根据视频id删除阿里云视频
-    @Value("${vod.configs.regionId}")
-    String rg;
-    @Value("${vod.configs.accessKeyId}")
-    String accessKeyId;
-    @Value("${vod.configs.accessKeySecret}")
-    String accessKeySecret;
+
+    /**
+     * 根据视频id删除阿里云视频
+     * id是视频的sourseid
+     */
+
+
     @DeleteMapping("removeAlyVideo/{id}")
     public R removeAlyVideo(@PathVariable String id) {
         try {
             //初始化对象
-            String regionId = rg;  // 点播服务接入区域
-            DefaultProfile profile = DefaultProfile.getProfile(regionId, accessKeyId, accessKeySecret);
-            DefaultAcsClient client = new DefaultAcsClient(profile);
+            DefaultAcsClient client = InitVodCilent.initVodClient(ConstantVodUtils.ACCESS_KEY_ID, ConstantVodUtils.ACCESS_KEY_SECRET);
             //创建删除视频request对象
             DeleteVideoRequest request = new DeleteVideoRequest();
             //向request设置视频id

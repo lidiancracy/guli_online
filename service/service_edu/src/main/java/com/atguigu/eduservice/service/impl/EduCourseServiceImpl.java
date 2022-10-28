@@ -1,6 +1,7 @@
 package com.atguigu.eduservice.service.impl;
 
 import com.atguigu.Exception.lidianException;
+import com.atguigu.eduservice.client.videoclient;
 import com.atguigu.eduservice.entity.EduChapter;
 import com.atguigu.eduservice.entity.EduCourseDescription;
 import com.atguigu.eduservice.entity.EduVideo;
@@ -17,6 +18,12 @@ import com.atguigu.eduservice.mapper.EduCourseMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
 * @author 83799
@@ -84,14 +91,34 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
 
     /**
      * 删除课程
+     * todo 删除课程同时删除该课程所有小结视频
      * @param courseId
      */
     @Autowired
     EduVideoService eduVideoService;
     @Autowired
     EduChapterService eduChapterService;
+    @Autowired
+    videoclient videoclient;
+
     @Override
     public void removeCourse(String courseId) {
+        //===========阿里云删除操作
+        LambdaQueryWrapper<EduVideo> vwq = new LambdaQueryWrapper<>();
+        vwq.eq(EduVideo::getCourseId,courseId);
+        List<EduVideo> list = eduVideoService.list(vwq);
+        if(list!=null&& !list.isEmpty()){
+            ArrayList<String> strings = new ArrayList<>();
+            for (EduVideo eduVideo : list) {
+                String videoSourceId = eduVideo.getVideoSourceId();
+                if(!videoSourceId.isEmpty()){
+                    strings.add(videoSourceId);
+                }
+            }
+            videoclient.deleteBatch(strings);
+        }
+
+        //===========数据库删除操作
         LambdaQueryWrapper<EduVideo> wqvideo = new LambdaQueryWrapper<>();
         wqvideo.eq(EduVideo::getCourseId,courseId);
         //1 根据课程id删除小节
