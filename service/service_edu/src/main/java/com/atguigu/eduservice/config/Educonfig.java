@@ -13,19 +13,19 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class Educonfig {
-    /**
-     * 逻辑删除插件
-     */
-    @Bean
-    public ISqlInjector sqlInjector() {
-        return new LogicSqlInjector();
-    }
-
-    /**
-     * 分页插件
-     */
-    @Bean
-    public PaginationInterceptor paginationInterceptor() {
-        return new PaginationInterceptor();
-    }
+//    /**
+//     * 逻辑删除插件
+//     */
+//    @Bean
+//    public ISqlInjector sqlInjector() {
+//        return new LogicSqlInjector();
+//    }
+//
+//    /**
+//     * 分页插件
+//     */
+//    @Bean
+//    public PaginationInterceptor paginationInterceptor() {
+//        return new PaginationInterceptor();
+//    }
 }

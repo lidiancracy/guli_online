@@ -1,6 +1,7 @@
 package com.atguigu.eduservice.client;
 
 import com.atguigu.R.R;
+import com.atguigu.eduservice.client.impl.videoimpl;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,7 +16,7 @@ import java.util.List;
  * @Date 2022/10/28 15:00
  */
 @Component
-@FeignClient("service-video")
+@FeignClient(value = "service-video",fallback = videoimpl.class)
 public interface videoclient {
     @DeleteMapping("/eduvod/video/removeAlyVideo/{id}")
     public R removeAlyVideo(@PathVariable("id") String id);
