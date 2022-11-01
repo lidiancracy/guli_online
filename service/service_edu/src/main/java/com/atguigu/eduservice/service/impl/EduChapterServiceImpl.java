@@ -8,6 +8,7 @@ import com.atguigu.eduservice.entity.EduChapter;
 import com.atguigu.eduservice.service.EduChapterService;
 import com.atguigu.eduservice.mapper.EduChapterMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class EduChapterServiceImpl extends ServiceImpl<EduChapterMapper, EduChap
     EduVideoService eduVideoService;
     @Autowired
     EduChapterService chapterService;
+    @Cacheable(key = "#courseId",cacheNames = "chaptercont")
     @Override
     public ArrayList<HashMap<String, Object>> getallvideos(String courseId) {
         ArrayList<HashMap<String, Object>> hashMaps = new ArrayList<>();
