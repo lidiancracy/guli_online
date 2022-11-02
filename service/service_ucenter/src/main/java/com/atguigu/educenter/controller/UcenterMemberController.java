@@ -45,14 +45,19 @@ public class UcenterMemberController {
         return R.ok();
     }
 
-    //根据token获取用户信息
+    //根据token获取用户id
     @GetMapping("getMemberInfo")
     public R getMemberInfo(HttpServletRequest request) {
-        //调用jwt工具类的方法。根据request对象获取头信息，返回用户id
+        //调用jwt工具类的方法，根据request对象获取头信息
         String memberId = JwtUtils.getMemberIdByJwtToken(request);
-        //查询数据库根据用户id获取用户信息
         UcenterMember member = memberService.getById(memberId);
         return R.ok().data("userInfo",member);
+    }
+
+    @GetMapping("getUcenter/{memberId}")
+    public UcenterMember getUcenterById(@PathVariable("memberId") String memberId){
+        UcenterMember member = memberService.getById(memberId);
+        return member;
     }
 
 }

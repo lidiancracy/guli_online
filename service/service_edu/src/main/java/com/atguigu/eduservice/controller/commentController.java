@@ -7,10 +7,12 @@ import com.atguigu.eduservice.client.ucenterclient;
 import com.atguigu.eduservice.entity.EduComment;
 import com.atguigu.eduservice.entity.EduCourse;
 import com.atguigu.eduservice.entity.EduTeacher;
+import com.atguigu.eduservice.entity.UcenterMember;
 import com.atguigu.eduservice.service.EduCommentService;
 import com.atguigu.eduservice.service.EduCourseService;
 
 import com.atguigu.eduservice.vo.commentVo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +41,10 @@ public class commentController {
      * 获取所有评论
      */
     @GetMapping("/{page}/{limit}")
-    public R getcm(@PathVariable long page, @PathVariable long limit,HttpServletRequest request) {
+    public R getcm(@PathVariable long page, @PathVariable long limit,String courseId,HttpServletRequest request) {
 
         Page<EduComment> pageParam = new Page<>(page, limit);
-        eduCommentService.page(pageParam, null);
+        eduCommentService.page(pageParam, new LambdaQueryWrapper<EduComment>().eq(EduComment::getCourseId,courseId));
         List<EduComment> records = pageParam.getRecords();
 
         long current = pageParam.getCurrent();
@@ -63,7 +65,7 @@ public class commentController {
         map.put("hasPrevious", hasPrevious);
         System.out.println(map);
 
-        return R.ok().data("data", map);
+        return R.ok().data(map);
     }
 
     /**
@@ -75,35 +77,19 @@ public class commentController {
     @Autowired
     ucenterclient ucenterclient;
 
-//    @PostMapping("/auth/save")
-//    public R addcm(@RequestBody EduComment eduComment, HttpServletRequest request) {
-//        EduComment eduCommenttemp = new EduComment();
-//        eduCommenttemp.setContent(eduComment.getContent());
-//        eduCommenttemp.setCourseId(eduComment.getCourseId());
-//        // 根据courseid查出teacherid
-//        EduCourse byId = eduCourseService.getById(eduComment.getCourseId());
-//        if (byId == null) {
-//            throw new lidianException(20001, "课程不存在");
-//        }
-//        String teacherId = byId.getTeacherId();
-//        if (StringUtils.hasText(teacherId)) {
-//            eduCommenttemp.setTeacherId(teacherId);
-//        }
-//        // 当前用户信息也要保存
-//        String memberIdByJwtToken = JwtUtils.getMemberIdByJwtToken(request);
-//        if (StringUtils.hasText(memberIdByJwtToken)) {
-//            throw new lidianException(20001, "用户未登录");
-//        }
-//        eduCommenttemp.setMemberId(memberIdByJwtToken);
-//
-//        // 保存会员基本信息 这里要调服务
-//        R memberInfo = ucenterclient.getMemberInfo(request);
-//        Map<String, Object> data = memberInfo.getData();
-//        Object user = data.get("userinfo");
-//        commentVo commentVo=(commentVo)user;
-//        eduCommenttemp.setNickname(commentVo.getNickname());
-//        eduCommenttemp.setAvatar(commentVo.getAvatar());
-//        eduCommentService.save(eduCommenttemp);
-//        return R.ok();
-//    }
+    @PostMapping("/auth/save")
+    public R addcm(@RequestBody EduComment eduComment, HttpServletRequest request) {
+        //根据token获取用户信息
+        String memberId = JwtUtils.getMemberIdByJwtToken(request);
+        if(StringUtils.isEmpty(memberId)){
+            return R.error().message("请登录");
+        }
+        eduComment.setMemberId(memberId);
+        UcenterMember member = ucenterclient.getUcenterById(memberId);
+        eduComment.setNickname(member.getNickname());
+        eduComment.setAvatar(member.getAvatar());
+//        BeanUtils.copyProperties(member,eduComment);
+        eduCommentService.save(eduComment);
+        return R.ok();
+    }
 }

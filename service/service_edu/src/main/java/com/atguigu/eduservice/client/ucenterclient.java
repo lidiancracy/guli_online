@@ -2,6 +2,7 @@ package com.atguigu.eduservice.client;
 
 import com.atguigu.R.R;
 import com.atguigu.eduservice.client.impl.videoimpl;
+import com.atguigu.eduservice.entity.UcenterMember;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +22,9 @@ import java.util.List;
 @FeignClient(value = "service-ucenter")
 public interface ucenterclient {
     @GetMapping("/educenter/member/getMemberInfo")
-    public R getMemberInfo(HttpServletRequest request);
+    public UcenterMember getMemberInfo(HttpServletRequest request);
+    @GetMapping("/educenter/member/getUcenter/{memberId}")
+    public UcenterMember getUcenterById(@PathVariable("memberId") String memberId);
 }
 
 
