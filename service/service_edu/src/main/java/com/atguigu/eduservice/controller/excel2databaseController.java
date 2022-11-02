@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Api(description = "excel管理")
 @RestController
-@RequestMapping("/eduservice/excel")
+@RequestMapping({"/eduservice/excel","/eduservice/subject"})
 @CrossOrigin
 public class excel2databaseController {
     /**

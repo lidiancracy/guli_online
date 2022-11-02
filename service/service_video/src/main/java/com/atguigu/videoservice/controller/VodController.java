@@ -6,6 +6,8 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.vod.model.v20170321.DeleteVideoRequest;
 import com.aliyuncs.vod.model.v20170321.DeleteVideoResponse;
 
+import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthRequest;
+import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthResponse;
 import com.atguigu.Exception.lidianException;
 import com.atguigu.R.R;
 import com.atguigu.videoservice.Utils.ConstantVodUtils;
@@ -64,5 +66,28 @@ public class VodController {
     public R deleteBatch(@RequestParam("videoIdList") List<String> videoIdList) {
         vodService.removeMoreAlyVideo(videoIdList);
         return R.ok();
+    }
+    /**
+     * 根据视频id返回凭证,前段有了凭证可以播放视频
+     * 凭证需要秘钥的 key secret 还有数据库的video sourseid
+     */
+//根据视频id获取视频凭证
+    @GetMapping("getPlayAuth/{id}")
+    public R getPlayAuth(@PathVariable String id) {
+        try {
+            //创建初始化对象
+            DefaultAcsClient client =
+                    InitVodCilent.initVodClient(ConstantVodUtils.ACCESS_KEY_ID, ConstantVodUtils.ACCESS_KEY_SECRET);
+            //创建获取凭证request和response对象
+            GetVideoPlayAuthRequest request = new GetVideoPlayAuthRequest();
+            //向request设置视频id
+            request.setVideoId(id);
+            //调用方法得到凭证
+            GetVideoPlayAuthResponse response = client.getAcsResponse(request);
+            String playAuth = response.getPlayAuth();
+            return R.ok().data("playAuth",playAuth);
+        }catch(Exception e) {
+            throw new lidianException(20001,"获取凭证失败");
+        }
     }
 }
