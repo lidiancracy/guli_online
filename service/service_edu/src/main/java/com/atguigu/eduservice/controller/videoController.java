@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(description = "每章节小结管理")
 @RestController
 @RequestMapping("/eduservice/video")
-@CrossOrigin
+
 public class videoController {
 
     @Autowired

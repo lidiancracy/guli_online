@@ -16,7 +16,7 @@ import java.util.HashMap;
  * @Date 2022/10/26 19:15
  */
 @Api(description = "章节管理")
-@CrossOrigin
+
 @RestController
 @RequestMapping("/eduservice/chapter")
 public class charpterController {

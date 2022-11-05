@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
  */
 @RestController
 @RequestMapping("/ossservice/fileoss")
-@CrossOrigin
+
 public class osscontroller {
     /**
      * 上传头像

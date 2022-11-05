@@ -2,11 +2,16 @@ package com.atguigu.eduservice.excel;
 
 import com.alibaba.excel.EasyExcel;
 import com.atguigu.eduservice.listener.excellistener;
+import com.atguigu.eduservice.service.EduCourseService;
 import com.atguigu.eduservice.vo.category_lesson;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @SpringBootTest
+@RunWith(SpringJUnit4ClassRunner.class)
 public class TestEasyExcel {
     @Test
     public void excel() {
@@ -24,5 +29,12 @@ public class TestEasyExcel {
     }
 
     //创建方法返回list集合
+    @Autowired
+    EduCourseService courseService;
+    @Test
+    public void excel2() {
+        System.out.println(courseService.list(null));
+
+    }
 
 }

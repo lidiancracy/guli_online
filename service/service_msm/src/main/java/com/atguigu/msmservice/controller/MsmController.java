@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @Slf4j
 @RequestMapping("/edumsm/msm")
-@CrossOrigin
+
 public class MsmController {
 
     @Autowired

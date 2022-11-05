@@ -23,7 +23,7 @@ import java.util.List;
  * @Date 2022/10/26 15:51
  */
 @Api(description = "课程管理")
-@CrossOrigin
+
 @RestController
 @RequestMapping("/eduservice/course")
 public class educourseController {

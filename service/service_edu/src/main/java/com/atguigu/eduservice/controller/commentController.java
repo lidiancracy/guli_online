@@ -30,7 +30,7 @@ import java.util.Map;
  * @Date 2022/11/2 17:11
  */
 @Api(description = "课程评论管理")
-@CrossOrigin
+
 @RestController
 @RequestMapping("/eduservice/comment")
 public class commentController {

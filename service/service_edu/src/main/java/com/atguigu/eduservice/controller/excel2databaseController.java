@@ -23,7 +23,7 @@ import java.util.List;
 @Api(description = "excel管理")
 @RestController
 @RequestMapping({"/eduservice/excel","/eduservice/subject"})
-@CrossOrigin
+
 public class excel2databaseController {
     /**
      * 上传一个excel文档,将数据传入数据库中
